@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ChatGPT Personal</title>
+  <!-- Prism.js CSS (tema oscuro recomendado) -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/default.min.css">
+
+
+<!-- and it's easy to individually load additional languages -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      background-color: #1e1e1e;
+      color: #ffffff;
+      display: flex;
+      height: 100vh;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: #2c2c2c;
+      padding: 20px;
+      box-sizing: border-box;
+      border-right: 1px solid #3a3a3a;
+      overflow-y: auto;
+    }
+
+    .sidebar h2 {
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+
+    .sidebar .history-item {
+      padding: 10px;
+      margin-bottom: 10px;
+      background-color: #3a3a3a;
+      border-radius: 12px;
+      cursor: pointer;
+    }
+
+    .main-chat {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chat-container {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .message {
+      max-width: 80%;
+      padding: 12px 18px;
+      border-radius: 18px;
+      word-wrap: break-word;
+    }
+
+    .user-message {
+      align-self: flex-end;
+      background-color: #3f51b5;
+      max-width: 80%;
+      padding: 12px 18px;
+      border-radius: 18px;
+      word-wrap: break-word;
+    }
+
+    .bot-message {
+      align-self: flex-start;
+      background-color: #2d2d30;
+    }
+
+    .input-container {
+      display: flex;
+      padding: 15px;
+      background-color: #2c2c2c;
+      border-top: 1px solid #3a3a3a;
+    }
+
+    .input-container input {
+      flex: 1;
+      padding: 12px;
+      background-color: #1e1e1e;
+      color: white;
+      border: 1px solid #555;
+      border-radius: 15px;
+    }
+
+    .input-container button {
+      margin-left: 10px;
+      padding: 12px 20px;
+      background-color: #0a84ff;
+      color: white;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .input-container button:hover {
+      background-color: #006edc;
+    }
+
+    h1, h2, h3 {
+  margin: 5px 0;
+  color: #fdf9eb;
+}
+
+ul, li {
+  margin-left: 20px;
+}
+
+pre {
+  background-color: #111;
+  padding: 10px;
+  border-radius: 12px;
+  overflow-x: auto;
+  margin-top: 10px;
+}
+
+code {
+  font-family: monospace;
+  color: #0f0;
+}.code-block-wrapper {
+  position: relative;
+}
+
+.copy-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #444;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  z-index: 2;
+  opacity: 0.7;
+}
+
+
+.copy-btn:hover {
+  opacity: 1;
+}
+
+
+.code-block-wrapper {
+  position: relative;
+}
+
+.copy-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #444;
+  color: white;
+  border: none;.code-block-wrapper {
+  position: relative;
+}
+
+.copy-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #444;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  z-index: 2;
+  opacity: 0.7;
+}
+
+.copy-btn:hover {
+  opacity: 1;
+}
+
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  z-index: 2;
+  opacity: 0.7;
+}
+
+.copy-btn:hover {
+  opacity: 1;
+}
+
+.input-container textarea {
+  flex: 1;
+  padding: 12px;
+  background-color: #1e1e1e;
+  color: white;
+  border: 1px solid #555;
+  border-radius: 15px;
+  resize: none;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+  </style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <h2>Historial</h2>
+    <!-- Aquí se pueden agregar items de historial -->
+    <!-- <div class="history-item">Conversación 1</div> -->
+  </div>
+
+  <div class="main-chat">
+    <div class="chat-container" id="chat">
+      <!-- Aquí se mostrarán los mensajes -->
+    </div>
+
+    <div class="input-container">
+      <textarea id="user-input" placeholder="Escribe tu mensaje..." rows="1"></textarea>
+
+      <button id="send-button">Enviar</button>
+    </div>
+  </div>
+
+  <script type="module" src="index.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+
+</body>
+</html>
