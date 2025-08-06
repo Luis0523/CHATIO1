@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>ChatGPT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet" />
+
+    <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/default.min.css">
+
+
+    <!-- and it's easy to individually load additional languages -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .sidebar {
+            background-color: #212121;
+        }
+
+        .main-content {
+            background-color: #222222;
+        }
+
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            background-color: #1e1e1e;
+            color: #ffffff;
+            display: flex;
+            height: 100vh;
+        }
+
+
+        .main-chat {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+
+        }
+
+        .chat-container {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background-color: #222222;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 12px 18px;
+            border-radius: 18px;
+            word-wrap: break-word;
+        }
+
+        .user-message {
+            align-self: flex-end;
+            background-color: #2f2f2f;
+            max-width: 80%;
+            padding: 12px 18px;
+            border-radius: 18px;
+            word-wrap: break-word;
+        }
+
+        .bot-message {
+            align-self: flex-start;
+            background-color: #2d2d30;
+        }
+
+
+
+        .input-container input {
+            flex: 1;
+            padding: 12px;
+            background-color: #1e1e1e;
+            color: white;
+            border: 1px solid #555;
+            border-radius: 15px;
+        }
+
+        .input-container button {
+            margin-left: 10px;
+            padding: 12px 20px;
+            background-color: #0a84ff;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .input-container button:hover {
+            background-color: #006edc;
+        }
+
+        h1,
+        h2,
+        h3 {
+            margin: 5px 0;
+            color: #fdf9eb;
+        }
+
+        ul,
+        li {
+            margin-left: 20px;
+        }
+
+        pre {
+            background-color: #111;
+            padding: 10px;
+            border-radius: 12px;
+            overflow-x: auto;
+            margin-top: 10px;
+        }
+
+        code {
+            font-family: monospace;
+            color: #0f0;
+        }
+
+        .code-block-wrapper {
+            position: relative;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #444;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            z-index: 2;
+            opacity: 0.7;
+        }
+
+
+        .copy-btn:hover {
+            opacity: 1;
+        }
+
+
+        .code-block-wrapper {
+            position: relative;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #444;
+            color: white;
+            border: none;
+
+            .code-block-wrapper {
+                position: relative;
+            }
+
+            .copy-btn {
+                position: absolute;
+                top: 8px;
+                right: 8px;
+                background: #444;
+                color: white;
+                border: none;
+                padding: 6px 12px;
+                border-radius: 8px;
+                cursor: pointer;
+                font-size: 12px;
+                z-index: 2;
+                opacity: 0.7;
+            }
+
+            .copy-btn:hover {
+                opacity: 1;
+            }
+
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            z-index: 2;
+            opacity: 0.7;
+        }
+
+        .copy-btn:hover {
+            opacity: 1;
+        }
+
+        .input-container textarea {
+            flex: 1;
+            padding: 12px;
+            background-color: #2f2f2f;
+            color: white;
+            border: 1px solid #2f2f2f;
+            border-radius: 15px;
+            resize: none;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+        .chat-textarea {
+  min-height: 40px;
+  max-height: 200px;
+  overflow-y: auto;
+  line-height: 1.5;
+}
+
+/* Expansión automática del textarea */
+.chat-textarea:focus {
+  height: auto;
+}
+
+    </style>
+</head>
+
+<body class="bg-gray-800 text-white">
+    <div class="flex h-screen w-screen">
+        <div class="sidebar w-64 p-2 flex flex-col">
+            <div class="flex items-center justify-between p-2">
+                <div class="flex items-center gap-2">
+                    <span class="material-icons text-gray-400">apps</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="material-icons text-gray-400">open_in_new</span>
+                </div>
+            </div>
+            <div class="mt-4">
+                <button class="flex items-center w-full text-left p-2 rounded-md hover:bg-gray-700">
+                    <span class="material-icons mr-3">add</span>
+                    Nuevo chat
+                </button>
+                <button class="flex items-center w-full text-left p-2 mt-2 rounded-md hover:bg-gray-700">
+                    <span class="material-icons mr-3">search</span>
+                    Buscar chats
+                </button>
+                <button class="flex items-center w-full text-left p-2 mt-2 rounded-md hover:bg-gray-700">
+                    <span class="material-icons mr-3">book</span>
+                    Biblioteca
+                </button>
+            </div>
+            <div class="mt-6 flex-grow overflow-y-auto">
+                <div class="px-2">
+                    <div class="flex items-center text-sm text-gray-400 p-2">
+                        <span class="material-icons mr-3">code</span>
+                        Codex
+                    </div>
+                    <div class="flex items-center text-sm text-gray-400 p-2">
+                        <span class="material-icons mr-3">videocam</span>
+                        Sora
+                    </div>
+                    <div class="flex items-center text-sm text-gray-400 p-2">
+                        <span class="material-icons mr-3">grain</span>
+                        GPT
+                    </div>
+                    <div class="flex items-center text-sm text-gray-400 p-2">
+                        <span class="material-icons mr-3">palette</span>
+                        Camva
+                    </div>
+                </div>
+                <div class="mt-6 px-2">
+                    <div class="flex items-center text-sm text-gray-400 p-2 bg-gray-700 rounded-md">
+                        <span class="material-icons mr-3">folder_open</span>
+                        Nuevo proyecto
+                    </div>
+                    <div class="flex items-center text-sm text-gray-400 p-2">
+                        <span class="material-icons mr-3">folder_open</span>
+                        siu
+                    </div>
+                    <div class="flex items-center text-sm text-gray-400 p-2">
+                        <span class="material-icons mr-3">folder_open</span>
+                        LiusColop
+                    </div>
+                    <div class="flex items-center text-sm text-gray-400 p-2">
+                        <span class="material-icons mr-3">folder_open</span>
+                        FM
+                    </div>
+                    <div class="flex items-center text-sm text-gray-400 p-2">
+                        <span class="material-icons mr-3">folder_open</span>
+                        DLA
+                    </div>
+                    <div class="flex items-center text-sm text-gray-400 p-2">
+                        <span class="material-icons mr-3">folder_open</span>
+                        Dom
+                    </div>
+                    <div class="flex items-center text-sm text-gray-400 p-2">
+                        <span class="material-icons mr-3">more_horiz</span>
+                        Ver más
+                    </div>
+                </div>
+                <div class="mt-6 px-2">
+                    <h3 class="text-xs text-gray-500 font-semibold px-2 mb-2">Chats</h3>
+                    <div class="text-sm text-gray-400 p-2">Cálculo de vectores</div>
+                    <div class="text-sm text-gray-400 p-2">Generar CSS fondo azul</div>
+                    <div class="text-sm text-gray-400 p-2">Textos bíblicos culto</div>
+                    <div class="text-sm text-gray-400 p-2">Análisis dispositivo G-mark</div>
+                    <div class="text-sm text-gray-400 p-2">Efectos desvincular cuenta Sams...</div>
+                    <div class="text-sm text-gray-400 p-2">Resolución transformadas Laplac...</div>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-auto p-2">
+                <div class="flex items-center justify-between p-2 rounded-md hover:bg-gray-700">
+                    <div class="flex items-center">
+                        <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center mr-3">
+                            <span class="text-white font-bold">G</span>
+                        </div>
+                        <div>
+                            <p class="text-sm">Colegio Txoc</p>
+                            <p class="text-xs text-gray-400">Plus</p>
+                        </div>
+                    </div>
+                    <span class="material-icons text-gray-400">more_vert</span>
+                </div>
+            </div>
+        </div>
+        <div class="main-content flex-1 flex flex-col">
+            <header class="p-4 flex justify-between items-center">
+                <div class="flex items-center">
+                    <h1 class="text-lg font-semibold">ChatGPT</h1>
+                    <span class="text-lg font-semibold text-gray-400 ml-1">4o</span>
+                    <span class="material-icons text-gray-400">expand_more</span>
+                </div>
+                <span class="material-icons text-gray-400">more_horiz</span>
+            </header>
+            <main class="flex-1 flex flex-col items-center justify-center text-white">
+                <div class="text-center">
+                    <h2 class="text-4xl font-bold mb-8">¿En qué estás trabajando?</h2>
+                </div>
+
+                <div class="w-full max-w-2xl px-4">
+
+                    <!-- Contenedor de mensajes del chat -->
+                    <div id="chat"
+                        class="chat-container p-4 mb-4 bg-[#222222] rounded-2xl overflow-y-auto max-h-[400px] space-y-2" >
+                        <!-- Aquí se mostrarán los mensajes -->
+                    </div>
+
+                    <!-- Contenedor del input -->
+                    <div class="bg-[#2f2f2f] rounded-2xl p-4">
+                        <div class="flex flex-col">
+                            <div class="relative">
+                                <!-- Textarea que crece -->
+                                <textarea id="user-input"
+                                    class="chat-textarea bg-transparent w-full focus:outline-none placeholder-gray-400 resize-none pr-20"
+                                    placeholder="Pregunta lo que quieras" rows="1"></textarea>
+
+                                <!-- Botones derecha -->
+                                <div class="absolute right-0 bottom-0 flex items-center space-x-2 pr-2 pb-2">
+                                    <button class="p-2 hover:bg-gray-600 rounded-full">
+                                        <span class="material-icons text-gray-400">mic</span>
+                                    </button>
+                                    <button id="send-button" class="p-2 bg-gray-500 rounded-full hover:bg-gray-400">
+                                        <span class="material-icons text-white">arrow_upward</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Botones izquierda abajo -->
+                            <div class="flex items-center space-x-2 mt-2">
+                                <button class="bg-gray-600 p-2 rounded-full hover:bg-gray-500">
+                                    <span class="material-icons text-gray-300">add</span>
+                                </button>
+                                <button class="flex items-center bg-gray-600 p-2 rounded-lg hover:bg-gray-500">
+                                    <span class="material-icons text-gray-300 mr-1">apps</span>
+                                    <span class="text-sm text-white">Herramientas</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </main>
+
+
+        </div>
+    </div>
+
+    <script type="module" src="index.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+
+    <script>
+  const textarea = document.getElementById('user-input');
+
+  textarea.addEventListener('input', () => {
+    textarea.style.height = 'auto';
+    textarea.style.height = (textarea.scrollHeight) + 'px';
+  });
+</script>
+
+</body>
+
+</html>
